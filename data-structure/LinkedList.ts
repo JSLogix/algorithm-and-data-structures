@@ -1,22 +1,21 @@
-class _Node<T> {
-  constructor(public val: number, public next?: _Node<T> | null) {}
+class ListNode<T> {
+  constructor(public val: T, public next: ListNode<T> | null = null) {}
 }
 
 class LinkedList<T> {
-  private root: _Node<T> | null = null;
-  private tail: _Node<T> | null = null;
-  private length: number = 0;
+  private head: ListNode<T> | null = null;
+  private tail: ListNode<T> | null = null;
+  private length = 0;
 
-  constructor(val: number) {
-    const node = new _Node<T>(val);
-    this.root = this.tail = node;
+  constructor(val: T) {
+    this.head = this.tail = new ListNode(val);
     this.length = 1;
   }
 
-  push(val: number): void {
-    const node = new _Node<T>(val);
+  push(val: T): void {
+    const node = new ListNode(val);
     if (!this.tail) {
-      this.root = this.tail = node;
+      this.head = this.tail = node;
     } else {
       this.tail.next = node;
       this.tail = node;
@@ -24,22 +23,22 @@ class LinkedList<T> {
     this.length++;
   }
 
-  unshift(val: number): void {
-    this.root = new _Node<T>(val, this.root);
-    if (!this.tail) this.tail = this.root;
+  unshift(val: T): void {
+    this.head = new ListNode(val, this.head);
+    if (!this.tail) this.tail = this.head;
     this.length++;
   }
 
-  pop(): number {
-    if (!this.root) return -1;
+  pop(): T | null {
+    if (!this.head) return null;
     if (this.length === 1) {
-      const res = this.root.val;
-      this.root = this.tail = null;
+      const res = this.head.val;
+      this.head = this.tail = null;
       this.length = 0;
       return res;
     }
 
-    let temp = this.root;
+    let temp = this.head;
     while (temp.next && temp.next.next) temp = temp.next;
     const res = temp.next!.val;
     temp.next = null;
@@ -49,48 +48,43 @@ class LinkedList<T> {
     return res;
   }
 
-  shift(): number {
-    if (!this.root) return -1;
-    const res = this.root.val;
-    this.root = this.root.next || null;
-    if (!this.root) this.tail = null;
+  shift(): T | null {
+    if (!this.head) return null;
+    const res = this.head.val;
+    this.head = this.head.next;
+    if (!this.head) this.tail = null;
     this.length--;
     return res;
   }
 
-  get(index: number): number | null {
-    if (this.length === 0 || this.length < index) return null;
-    let temp = this.root;
-    while (temp && index != 0) {
-      temp = temp.next || null;
-      index--;
-    }
-    if (temp?.val === 0) return 0;
-    return temp?.val || null;
+  get(index: number): T | null {
+    if (index < 0 || index >= this.length) return null;
+    let temp = this.head;
+    while (temp && index--) temp = temp.next;
+    return temp ? temp.val : null;
   }
-  set(index: number, val: number): void {
-    if (index > this.size()) return;
-    let temp = this.root;
-    while (temp && index != 0) {
-      index--;
-      temp = temp.next || null;
-    }
+
+  set(index: number, val: T): boolean {
+    let temp = this.head;
+    while (temp && index--) temp = temp.next;
     if (temp) {
       temp.val = val;
+      return true;
     }
+    return false;
   }
-  insert(index: number, val: number): void {
-    if (index > this.size()) return;
-    let temp = this.root;
-    while (temp && index != 1) {
-      index--;
-      temp = temp.next || null;
-    }
-    if (temp) {
-      const ans = temp.next;
-      temp.next = new _Node(val);
-      temp.next.next = ans;
-    }
+
+  insert(index: number, val: T): boolean {
+    if (index < 0 || index > this.length) return false;
+    if (index === 0) return this.unshift(val), true;
+    if (index === this.length) return this.push(val), true;
+
+    let temp = this.head;
+    for (let i = 0; i < index - 1; i++) temp = temp!.next;
+
+    temp!.next = new ListNode(val, temp!.next);
+    this.length++;
+    return true;
   }
 
   size(): number {

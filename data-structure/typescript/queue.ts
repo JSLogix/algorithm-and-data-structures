@@ -29,3 +29,5 @@ class Queue<T> {
     this.root.length = 0;
   }
 }
+
+export default Queue;

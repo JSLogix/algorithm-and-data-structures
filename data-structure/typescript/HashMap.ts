@@ -54,3 +54,5 @@ class HashMap<T> {
     }
   }
 }
+
+export default HashMap;

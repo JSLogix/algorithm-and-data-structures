@@ -7,5 +7,5 @@
     "outDir": "./dist",
     "rootDir": "./src"
   },
-  "include": ["*"]
+  "include": ["*", "js-method/Promise.ts", "data-structure/LinkedList.ts"]
 }
